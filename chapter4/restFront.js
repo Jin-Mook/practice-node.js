@@ -1,6 +1,6 @@
 async function getUser() { // 로딩 시 사용자 정보를 가져오는 함수
   try {
-    const res = await axios.get('/user');
+    const res = await axios.get('/users');
     const users = res.data;
     const list = document.querySelector('#list')
     list.innerHTML = '';
@@ -40,7 +40,7 @@ async function getUser() { // 로딩 시 사용자 정보를 가져오는 함수
       console.log(res.data)
     })
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 }
 
