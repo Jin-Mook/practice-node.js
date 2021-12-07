@@ -1,3 +1,6 @@
+# 폴더 무시
 node_modules
+Node.js_교과서_강의교안/
+
+# 파일 무시
 .env
-Node.js_교과서_강의교안
