@@ -8,8 +8,22 @@ module.exports = () => {
     done(null, user.id)
   })
 
-  passport.deserializeUser((id, done) => {
-    User.findOne({ where: {id}})
+  passport.deserializeUser((id, done) => {   // 에러가 없으면 req.user를 생성한후 저장한다.
+    User.findOne({
+      where: {id},
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'nick'],
+          as: 'Followers'
+        },
+        {
+          model: User,
+          attributes: ['id', 'nick'],
+          as: 'Followings',
+        },
+      ]
+    })
       .then(user => done(null, user))    // req.user 에 유저 정보 저장
       .catch(err => done(err))
   })
