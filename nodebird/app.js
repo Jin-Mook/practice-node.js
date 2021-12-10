@@ -6,11 +6,16 @@ const session = require('express-session')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
 const {sequelize} = require('./models/index')
+const passport = require('passport')
+const passportConfig = require('./passport/index')
 
 dotenv.config()
 const pageRouter = require('./routes/page')
+const authRouter = require('./routes/auth')
 
 const app = express()
+passportConfig() // 패스포트 설정
+
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
@@ -41,7 +46,11 @@ app.use(session({
   },
 }));
 
+app.use(passport.initialize());
+app.use(passport.session())
+
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
