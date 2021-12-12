@@ -13,6 +13,7 @@ const passportConfig = require('./passport/index')
 const authRouter = require('./routes/auth')
 const indexRouter = require('./routes/index')
 const v1 = require('./routes/v1')
+const v2 = require('./routes/v2')
 
 dotenv.config()
 
@@ -57,6 +58,7 @@ app.use(passport.session())
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
 app.use('/v1', v1)
+app.use('/v2', v2)
 
 
 
