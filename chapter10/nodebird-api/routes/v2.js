@@ -9,7 +9,7 @@ const {Domain, User, Hashtag, Post} = require('../models/index')
 const router = express.Router()
 
 router.use(async (req, res, next) => {
-  console.log(req.get('origin'))
+  console.log(req.headers.origin)  // 아래 req.get('origin') 과 동일하다.
   console.log(url.parse(req.get('origin')))
   const domain = await Domain.findOne({
     where: {host: url.parse(req.get('origin')).host}
