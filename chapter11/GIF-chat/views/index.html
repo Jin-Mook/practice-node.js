@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF 채팅방</title>
+</head>
+<body>
+  <div>F12를 눌러 console탭과 network 탭을 확이하세요</div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io.connect('http://localhost:8005', {
+      path: '/socket.io',
+    })
+    socket.on('news', function (data) {
+      console.log(data)
+      socket.emit('reply', 'Hello Node.JS')
+    })
+  </script>
+</body>
+</html>
