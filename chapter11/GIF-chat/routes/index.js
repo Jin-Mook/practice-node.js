@@ -16,7 +16,7 @@ const upload = multer({
       done(null, path.basename(file.originalname, ext) + Date.now() + ext);
     }
   }),
-  limits: {fileSize: 5 * 1024 * 1024},
+  limits: {fileSize: 20 * 1024 * 1024},
 })
 
 router.post('/room/:id/gif', upload.single('gif'), async (req, res, next) => {
