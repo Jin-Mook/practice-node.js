@@ -132,7 +132,4 @@ router.post('/room/:id/chat', async (req, res, next) => {
 })
 
 
-
-
-
 module.exports = router;
