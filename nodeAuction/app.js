@@ -15,6 +15,8 @@ const authRouter = require('./routes/auth')
 
 const {sequelize} = require('./models/index')
 const passportconfig = require('./passport/index')
+const sse = require('./sse')
+const webSocket = require('./socket')
 
 const app = express()
 app.set('port', process.env.PORT || 8010)
@@ -68,7 +70,7 @@ app.use((err, req, res, next) => {
   res.render('error')
 })
 
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기 중')
   try {
     fs.readdirSync('uploads');
@@ -78,3 +80,5 @@ app.listen(app.get('port'), () => {
   }
 })
 
+sse(server)
+webSocket(server, app)
