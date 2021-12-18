@@ -6,6 +6,7 @@ const schedule = require('node-schedule')
 
 const {Good, User, Auction} = require('../models/index')
 const {isLoggedIn, isNotLoggedIn} = require('./middlewares')
+const { sequelize } = require('../models/user')
 
 const router = express.Router()
 
@@ -54,12 +55,27 @@ router.get('/good', isLoggedIn, (req, res, next) => {
 router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) => {
   try {
     const {name, price} = req.body
-    await Good.create({
+    const good = await Good.create({
       OwnerId: req.user.id,
       name,
       img: req.file.filename,
       price,
     })
+
+    const end = new Date()
+    end.setDate(end.getDate() + 1)   // 하루 뒤
+    schedule.scheduleJob(end, async () => {
+      const success = await Auction.findOne({
+        where: {GoodId: good.id},
+        order: [['bid', 'DESC']]
+      })
+
+      await Good.update({SoldId: success.UserId}, {where: {id: good.id}})
+      await User.update({
+        money: sequelize.literal(`money - ${success.bid}`)
+      }, {where: {id: success.UserId}})
+    })
+
     res.redirect('/')
   } catch (error) {
     console.error(error)
@@ -135,5 +151,18 @@ router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
   }
 })
 
+router.get('/list', isLoggedIn, async (req, res, next) => {
+  try {
+    const goods = await Good.findAll({
+      where: {SoldId: req.user.id},
+      include: {model: Auction},
+      order: [[{model: Auction}, 'bid', 'DESC']],
+    })
+    res.render('list', {title: `낙찰 목록 - NodeAuction`, goods})
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+})
 
 module.exports = router;
